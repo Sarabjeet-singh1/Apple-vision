@@ -402,111 +402,114 @@ canvas();
 
 function canvas1(){
   const canvas = document.querySelector("#page18>canvas");
-const context = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  const context = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
+  window.addEventListener("resize", function () {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    render();
+  });
 
-window.addEventListener("resize", function () {
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-render();
-});
+  function files(index) {
+    const data = [
+      "./images/img1.png",
+      "./images/img2.png",
+      "./images/img3.png",
+      "./images/img4.png",
+      "./images/img5.png",
+      "./images/img6.png",
+      "./images/img7.png",
+      "./images/img8.png",
+      "./images/img9.png",
+      "./images/img10.png",
+      "./images/img11.png",
+      "./images/img12.png",
+      "./images/img13.png",
+      "./images/img14.png",
+      "./images/img15.png",
+      "./images/img16.png",
+      "./images/img17.png",
+      "./images/img18.png",
+      "./images/img19.png",
+      "./images/img20.png",
+      "./images/img21.png",
+      "./images/img22.png",
+      "./images/img23.png",
+      "./images/img24.png",
+      "./images/img25.png"
+    ];
+    return data[index];
+  }
 
-function files(index) {
-var data =`.//images/img1.png
-.//images/img2.png
-.//images/img3.png
-.//images/img4.png
-.//images/img5.png
-.//images/img6.png
-.//images/img7.png
-.//images/img8.png
-.//images/img9.png
-.//images/img10.png
-.//images/img11.png
-.//images/img12.png
-.//images/img13.png
-.//images/img14.png
-.//images/img15.png
-.//images/img16.png
-.//images/img17.png
-.//images/img18.png
-.//images/img19.png
-.//images/img20.png
-.//images/img21.png
-.//images/img22.png
-.//images/img23png
-.//images/img24.png
-.//images/img25.png
-.//images/img1.png
-`;
-return data.split("\n")[index];
-}
+  const frameCount = 25;
+  const images = [];
+  const imageSeq = {
+    frame: 0,
+  };
 
-const frameCount = 25;
+  // Preload all images
+  for (let i = 0; i < frameCount; i++) {
+    const img = new Image();
+    img.src = files(i);
+    images.push(img);
+  }
 
-const images = [];
-const imageSeq = {
-frame: 1,
-};
+  // Wait for first image to load before starting animation
+  images[0].onload = () => {
+    render();
+    gsap.to(imageSeq, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: `none`,
+      scrollTrigger: {
+        scrub: 0.15,
+        trigger: `#page18`,
+        start: `top top`,
+        end: `80% top`,
+        scroller: `#main`,
+      },
+      onUpdate: render,
+    });
+  };
 
-for (let i = 0; i < frameCount; i++) {
-const img = new Image();
-img.src = files(i);
-images.push(img);
-}
+  function render() {
+    if (images[imageSeq.frame]) {
+      scaleImage(images[imageSeq.frame], context);
+    }
+  }
 
-gsap.to(imageSeq, {
-frame: frameCount - 1,
-snap: "frame",
-ease: `none`,
-scrollTrigger: {
-  scrub: 0.15,
-  trigger: `#page18`,
-  start: `top top`,
-  end: `80% top`,
-  scroller: `#main`,
-},
-onUpdate: render,
-});
+  function scaleImage(img, ctx) {
+    if (!img || !img.complete) return;
+    
+    var canvas = ctx.canvas;
+    var hRatio = canvas.width / img.width;
+    var vRatio = canvas.height / img.height;
+    var ratio = Math.max(hRatio, vRatio);
+    var centerShift_x = (canvas.width - img.width * ratio) / 2;
+    var centerShift_y = (canvas.height - img.height * ratio) / 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      img.width,
+      img.height,
+      centerShift_x,
+      centerShift_y,
+      img.width * ratio,
+      img.height * ratio
+    );
+  }
 
-images[1].onload = render;
-
-function render() {
-scaleImage(images[imageSeq.frame], context);
-}
-
-function scaleImage(img, ctx) {
-var canvas = ctx.canvas;
-var hRatio = canvas.width / img.width;
-var vRatio = canvas.height / img.height;
-var ratio = Math.max(hRatio, vRatio);
-var centerShift_x = (canvas.width - img.width * ratio) / 2;
-var centerShift_y = (canvas.height - img.height * ratio) / 2;
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-ctx.drawImage(
-  img,
-  0,
-  0,
-  img.width,
-  img.height,
-  centerShift_x,
-  centerShift_y,
-  img.width * ratio,
-  img.height * ratio
-);
-}
-ScrollTrigger.create({
-
-trigger: "#page18",
-pin: true,
-
-scroller: `#main`,
-
-start: `top top`,
-end: `80% top`,
-});
+  ScrollTrigger.create({
+    trigger: "#page18",
+    pin: true,
+    scroller: `#main`,
+    start: `top top`,
+    end: `80% top`,
+  });
 }
 canvas1();
 var tl3 = gsap.timeline({
